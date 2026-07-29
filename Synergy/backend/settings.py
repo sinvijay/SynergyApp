@@ -33,8 +33,8 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 ALLOWED_HOSTS = ['*', 'synergyapp.up.railway.app', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     'https://synergyapp.up.railway.app',
+    'https://synergyapp-iota.vercel.app', # Add this line
 ]
-
 
 # Application definition
 
