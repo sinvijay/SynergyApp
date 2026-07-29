@@ -1,0 +1,27 @@
+
+
+<h2>Word to PDF Converter</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <p style="color: red;"></p>{{ message }}
+  {% endfor %}
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="word_file">Select a Word Document to convert:</label>
+    <br><br>
+    
+     <!-- accept="application/pdf" is the correct standard -->
+    <input type="file" name="word_file" id="word_file" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+    <br><br>
+    
+    <button type="submit">Convert to PDF</button>
+   
+</form>
+
+<br>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+

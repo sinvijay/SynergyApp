@@ -1,0 +1,28 @@
+
+<h2>PDF to Word Converter</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <!-- Put the variable INSIDE the paragraph tags -->
+    <p style="color: red;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+<!-- method="post" is required to send data securely -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="pdf_file">Select a PDF to convert:</label>
+    <br><br>
+    
+    <!-- accept="application/pdf" is the correct standard -->
+    <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" required>
+    <br><br>
+    
+    <button type="submit">Convert to Word</button>
+
+</form>
+
+<br>
+<!-- Added the actual clickable link -->
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>

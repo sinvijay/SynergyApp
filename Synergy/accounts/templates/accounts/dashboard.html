@@ -1,0 +1,100 @@
+<!-- accounts/templates/accounts/dashboard.html -->
+
+
+<!-- ... rest of your existing dashboard content ... -->
+<h2>Welcome to Your Dashboard, {{ user.first_name }}!</h2>
+
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Mobile Number:</strong> {{ user.mobile_number|default:"Not provided" }}</p>
+
+<hr>
+
+<h3>Your Utility Services</h3>
+<ul>
+    <li><a href="{% url 'merge_pdf' %}">PDF Tools (Merge)</a></li>
+    <li><a href="{% url 'remove_bg' %}">Image Tools (Remove Background)</a></li>
+    <li><a href="{% url 'pdf_to_word' %}">PDF Tools (PDF to Word)</a></li>
+    <li><a href="{% url 'word_to_pdf' %}">PDF Tools (Word to PDF)</a></li>
+    <li><a href="{% url 'compress_image' %}">Image Tools (Compress Image)</a></li>
+    <li><a href="{% url 'compress_pdf' %}">PDF Tools (Compress PDF)</a></li>
+    <li><a href="{% url 'ocr' %}">OCR Extraction (Image to Text)</a></li>
+</ul>
+
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+</form>
+
+
+<!-- Chat_bot Area -->
+<hr>
+
+<h3>Need Help? Ask the Assistant</h3>
+
+<!-- This creates the scrollable box for the chat -->
+<div id="chat-window" style="border: 1px solid #ccc; padding: 10px; width: 400px; height: 200px; overflow-y: scroll; margin-bottom: 10px; background-color: #f9f9f9;">
+    <p><strong>Bot:</strong> Hi {{ user.first_name }}! How can I help you use the tools today?</p>
+</div>
+
+<!-- This creates the actual typing area and the clickable button -->
+<input type="text" id="user-input" placeholder="Ask how to merge PDFs..." style="width: 315px;" onkeypress="handleEnter(event)">
+<button onclick="sendMessage()">Send</button>
+
+<!-- This script makes the button actually work without refreshing the page -->
+<script>
+    function getCSRFToken() {
+        let cookieValue = null;
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.substring(0, 10) === ('csrftoken=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+            }
+        }
+        return cookieValue;
+    }
+
+    function handleEnter(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const chatWindow = document.getElementById("chat-window");
+        const message = inputField.value.trim();
+
+        if (message === "") return;
+
+        chatWindow.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+        inputField.value = ""; 
+        chatWindow.scrollTop = chatWindow.scrollHeight; 
+
+        fetch("{% url 'chatbot_api' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken() 
+            },
+            body: JSON.stringify({ "message": message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reply) {
+                chatWindow.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+            } else {
+                chatWindow.innerHTML += `<p style="color:red;"><strong>Bot:</strong> Error communicating with server.</p>`;
+            }
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+<p>
+    <a href="{% url 'profile_update' %}">
+        <button type="button">Edit Profile</button>
+    </a>
+</p>

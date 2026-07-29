@@ -1,0 +1,32 @@
+
+<!-- tools/templates/tools/ocr.html -->
+<h2>Image to Text (OCR)</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <p style="color: red;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="image_file">Select an image to extract text from:</label>
+    <br><br>
+    
+    <input type="file" name="image_file" id="image_file" accept="image/*" required>
+    <br><br>
+    
+    <button type="submit">Extract Text</button>
+</form>
+
+<!-- This section only appears IF text was successfully extracted -->
+{% if extracted_text %}
+    <hr>
+    <h3>Extracted Text:</h3>
+    <!-- A textarea makes it super easy to copy and paste -->
+    <textarea rows="10" cols="50" readonly>{{ extracted_text }}</textarea>
+{% endif %}
+    
+<br><br>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
