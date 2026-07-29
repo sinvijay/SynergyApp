@@ -132,7 +132,6 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_REDIRECT_URL = 'dashboard'
 CORS_ALLOWED_ORIGINS = [
-    "https://synergyapp-iota.vercel.app",
-    # Keep this if you want to test locally
-    "http://localhost:5173", 
+    "https://sy-nergy.up.railway.app",  # Your new Frontend URL
+    "http://localhost:5173",            # Keep this for local testing
 ]
